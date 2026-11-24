@@ -1,0 +1,37 @@
+name: Windows derlemesi
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  derle:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Derle (tek dosya exe)
+        run: dotnet publish src/RobzAltyazi.csproj -c Release -o cikti
+
+      - name: Exe'yi yükle
+        uses: actions/upload-artifact@v4
+        with:
+          name: RobzAltyazi
+          path: cikti/RobzAltyazi.exe
+          if-no-files-found: error
+
+      - name: Sürüm yayınla (v ile başlayan etiketlerde)
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "${{ github.ref_name }}" cikti/RobzAltyazi.exe --title "Robz Altyazı ${{ github.ref_name }}" --notes "İndir: RobzAltyazi.exe. Kurulum için README'ye bakın."
