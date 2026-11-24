@@ -34,4 +34,5 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "${{ github.ref_name }}" cikti/RobzAltyazi.exe --title "Robz Altyazı ${{ github.ref_name }}" --notes "İndir: RobzAltyazi.exe. Kurulum için README'ye bakın."
+        run: |
+          gh release create "${{ github.ref_name }}" cikti/RobzAltyazi.exe --title "Robz Altyazı ${{ github.ref_name }}" --notes "RobzAltyazi.exe dosyasını indirin. Kurulum için README'ye bakın."
